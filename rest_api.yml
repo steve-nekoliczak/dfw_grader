@@ -1,0 +1,75 @@
+openapi: "3.0.0"
+info:
+  description: REST API for grading/aggregating grading results for DieFehlendeWörter.
+  version: "1.0.0"
+  title: REST API for de_exercise.
+
+servers:
+  - url: /api
+
+paths:
+
+  /exercise/post_ex_attempt:
+    post:
+      operationId: grader.api.post_ex_attempt
+      tags:
+        - Grader
+      summary: Post results for a user's exercise attempt.
+      description: Get a paragraph exercise.
+      parameters:
+        - name: ex_id
+          in: query
+          description: MongoDB _id for the exercise.
+          schema:
+            type: string
+          required: True
+        - name: user_id
+          in: query
+          description: MongoDB id for the user who took the exercise.
+          schema:
+            type: string
+          required: True
+        - name: topic_word_index
+          in: query
+          description: Index of the topic word for the exercise.
+          schema:
+            type: integer
+          required: True
+        - name: guess
+          in: query
+          description: User's guess for the exercise.
+          schema:
+            type: string
+          required: True
+        - name: timestamp
+          in: query
+          description: Timestamp for when the exercise occurred. If not supplied, then a timestamp will be created for when it was sent to this API.
+          schema:
+            type: string
+            format: date-time
+          required: False
+      responses:
+        200:
+          description: Successfully received the exercise attempt.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/grade'
+
+components:
+  schemas:
+    grade:
+      properties:
+        ex_id:
+          type: string
+        user_id:
+          type: string
+        topic_word_index:
+          type: integer
+        guess:
+          type: string
+        answer:
+          type: string
+        is_correct:
+          type: boolean
+
