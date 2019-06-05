@@ -11,7 +11,7 @@ paths:
 
   /exercise/post_ex_attempt:
     post:
-      operationId: grader.api.post_ex_attempt
+      operationId: api.grader.post_ex_attempt
       tags:
         - Grader
       summary: Post results for a user's exercise attempt.
