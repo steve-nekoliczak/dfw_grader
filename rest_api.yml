@@ -9,7 +9,7 @@ servers:
 
 paths:
 
-  /exercise/post_ex_attempt:
+  /grader/post_ex_attempt:
     post:
       operationId: api.grader.post_ex_attempt
       tags:
