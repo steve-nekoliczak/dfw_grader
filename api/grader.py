@@ -1,5 +1,5 @@
-from bson import ObjectId
 from bson.json_util import dumps, RELAXED_JSON_OPTIONS
+from bson.objectid import ObjectId
 from json import loads
 
 from models import ExAttempt
@@ -20,7 +20,7 @@ def post_ex_attempt(ex_id, user_id, topic_word_index, guess, timestamp=None):
     if not tw:
         return 'topic word index not found', 404
 
-    ea = ExAttempt(ex_id=ex_id,
+    ea = ExAttempt(ex_id=ObjectId(ex_id),
                    user_id=user_id,
                    topic_word_index=topic_word_index,
                    guess=guess,
