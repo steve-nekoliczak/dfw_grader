@@ -1,3 +1,4 @@
+import copy
 
 # article criteria
 cases = ['Nom', 'Acc', 'Dat', 'Gen']
@@ -46,58 +47,36 @@ def article_pipeline(user_id, from_datetime, to_datetime):
             for gender in genders:
                 total_key = case + '_' + def_ + '_' + gender + '_total'
                 correct_key = case + '_' + def_ + '_' + gender + '_correct'
+
                 if gender == 'Plur':
-                    facets_local = {
-                        total_key: [
-                            {
-                                '$match': {
-                                    'ex_details.topic_words.feats.Case': case,
-                                    'ex_details.topic_words.feats.Definite': def_,
-                                    'ex_details.topic_words.feats.Number': 'Plur',
-                                }
-                            },
-                            {'$count': 'count'}
-                        ],
-                        correct_key: [
-                            {
-                                '$match': {
-                                    'is_correct': True,
-                                    'ex_details.topic_words.feats.Case': case,
-                                    'ex_details.topic_words.feats.Definite': def_,
-                                    'ex_details.topic_words.feats.Number': 'Plur',
-                                }
-                            },
-                            {'$count': 'count'}
-                        ],
-                    }
+                    number = 'Plur'
                 else:
-                    facets_local = {
-                        total_key: [
-                            {
-                                '$match': {
-                                    'ex_details.topic_words.feats.Case': case,
-                                    'ex_details.topic_words.feats.Definite': def_,
-                                    'ex_details.topic_words.feats.Gender': gender,
-                                    'ex_details.topic_words.feats.Number': 'Sing',
-                                }
-                            },
-                            {'$count': 'count'}
-                        ],
-                        correct_key: [
-                            {
-                                '$match': {
-                                    'is_correct': True,
-                                    'ex_details.topic_words.feats.Case': case,
-                                    'ex_details.topic_words.feats.Definite': def_,
-                                    'ex_details.topic_words.feats.Gender': gender,
-                                    'ex_details.topic_words.feats.Number': 'Sing',
-                                }
-                            },
-                            {'$count': 'count'}
-                        ],
-                    }
-                facets[total_key] = facets_local[total_key]
-                facets[correct_key] = facets_local[correct_key]
+                    number = 'Sing'
+
+                facet_core = [
+                    {
+                        '$match': {
+                            'ex_details.topic_words.feats.Case': case,
+                            'ex_details.topic_words.feats.Definite': def_,
+                            'ex_details.topic_words.feats.Number': number,
+                        }
+                    },
+                    {'$count': 'count'}
+                ]
+
+                match_index = -1
+                for i, v in enumerate(facet_core):
+                    if '$match' in v:
+                        match_index = i
+
+                facets[total_key] = copy.deepcopy(facet_core)
+                facets[correct_key] = copy.deepcopy(facet_core)
+
+                # Customize correct_key's values
+                facets[correct_key][match_index]['$match']['is_correct'] = True
+                if number == 'Sing':
+                    facets[correct_key][match_index]['$match']['ex_details.topic_words.feats.Gender'] = gender
+                    facets[total_key][match_index]['$match']['ex_details.topic_words.feats.Gender'] = gender
 
     return pipeline
 
