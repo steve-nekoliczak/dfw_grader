@@ -1,5 +1,4 @@
 import datetime
-import time
 
 
 class ExAttempt(dict):
@@ -15,7 +14,7 @@ class ExAttempt(dict):
         if timestamp:
             self.timestamp = timestamp
         else:
-            self.timestamp = datetime.datetime.fromtimestamp(time.time()).isoformat()
+            self.timestamp = datetime.datetime.utcnow()
 
     def grade(self, answer):
         self.answer = answer
