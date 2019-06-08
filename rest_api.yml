@@ -56,9 +56,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/grade'
 
-  /visualizer_data/get_article_stats:
-    post:
-      operationId: api.visualizer_data.get_article_stats
+  /visualizer_data/get_stats:
+    get:
+      operationId: api.visualizer_data.get_stats
       tags:
         - Visualizer Data
       summary: Get aggregated data for user's article exercise results.
@@ -66,7 +66,13 @@ paths:
       parameters:
         - name: user_id
           in: query
-          description: User's ID in the database.
+          description: User ID.
+          schema:
+            type: string
+          required: True
+        - name: ex_type
+          in: query
+          description: Exercise type to aggregate data for.
           schema:
             type: string
           required: True

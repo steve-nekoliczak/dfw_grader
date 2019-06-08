@@ -29,6 +29,11 @@ def sanitize_to_datetime_input(datetime_str):
         return datetime.datetime.fromisoformat(datetime_str)
 
 
+def get_stats(user_id, ex_type, from_datetime=None, to_datetime=None):
+    if ex_type == 'article':
+        return get_article_stats(user_id, from_datetime, to_datetime)
+
+
 def get_article_stats(user_id, from_datetime=None, to_datetime=None):
     from config import mongo
 
