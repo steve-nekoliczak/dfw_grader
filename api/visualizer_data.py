@@ -30,19 +30,17 @@ def sanitize_to_datetime_input(datetime_str):
 
 
 def get_stats(user_id, ex_type, from_datetime=None, to_datetime=None):
-    if ex_type == 'article':
-        return get_article_stats(user_id, from_datetime, to_datetime)
-
-
-def get_article_stats(user_id, from_datetime=None, to_datetime=None):
     from config import mongo
 
     from_datetime = sanitize_from_datetime_input(from_datetime)
     to_datetime = sanitize_to_datetime_input(to_datetime)
 
-    pipeline = pipelines.article_pipeline(user_id,
-                                          from_datetime,
-                                          to_datetime)
+    pipeline = pipelines.gen_pipeline(ex_type,
+                                      user_id,
+                                      from_datetime,
+                                      to_datetime)
+    if pipeline is None:
+        return 'exercise type not found', 404
 
     result = mongo.db.ex_attempt.aggregate(pipeline)
     if not result:
