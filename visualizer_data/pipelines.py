@@ -27,12 +27,12 @@ def gen_pipeline(ex_type, user_id, from_datetime, to_datetime):
         return None
 
 
-def gen_adjective_pipeline(user_id, from_datetime, to_datetime):
+def pipeline_base(ex_type, user_id, from_datetime, to_datetime):
     pipeline = [
         {
             '$match': {
                 'user_id': user_id,
-                'type': 'adjective',
+                'type': ex_type,
                 'timestamp': {'$gt': from_datetime, '$lt': to_datetime}
             }
         },
@@ -58,6 +58,13 @@ def gen_adjective_pipeline(user_id, from_datetime, to_datetime):
             }
         }
     ]
+
+    return pipeline
+
+
+def gen_adjective_pipeline(user_id, from_datetime, to_datetime):
+
+    pipeline = pipeline_base('adjective', user_id, from_datetime, to_datetime)
 
     # only one facet can be used per pipeline, so [0] is safe
     facets = [p['$facet'] for p in pipeline if '$facet' in p][0]
@@ -101,36 +108,8 @@ def gen_adjective_pipeline(user_id, from_datetime, to_datetime):
 
 
 def gen_article_pipeline(user_id, from_datetime, to_datetime):
-    pipeline = [
-        {
-            '$match': {
-                'user_id': user_id,
-                'type': 'article',
-                'timestamp': {'$gt': from_datetime, '$lt': to_datetime}
-            }
-        },
-        {
-            '$lookup': {
-                'from': 'exercise',
-                'localField': "ex_id",
-                'foreignField': '_id',
-                'as': 'ex_details'
-            }
-        },
-        {'$unwind': '$ex_details'},
-        {'$unwind': '$ex_details.topic_words'},
-        {
-            '$match': {
-                '$expr': {
-                    '$eq': ['$topic_word_index', '$ex_details.topic_words.index']
-                }
-            }
-        },
-        {
-            '$facet': {
-            }
-        }
-    ]
+
+    pipeline = pipeline_base('article', user_id, from_datetime, to_datetime)
 
     # only one facet can be used per pipeline, so [0] is safe
     facets = [p['$facet'] for p in pipeline if '$facet' in p][0]
@@ -176,36 +155,8 @@ def gen_article_pipeline(user_id, from_datetime, to_datetime):
 
 
 def gen_verb_pipeline(user_id, from_datetime, to_datetime):
-    pipeline = [
-        {
-            '$match': {
-                'user_id': user_id,
-                'type': 'verb',
-                'timestamp': {'$gt': from_datetime, '$lt': to_datetime}
-            }
-        },
-        {
-            '$lookup': {
-                'from': 'exercise',
-                'localField': "ex_id",
-                'foreignField': '_id',
-                'as': 'ex_details'
-            }
-        },
-        {'$unwind': '$ex_details'},
-        {'$unwind': '$ex_details.topic_words'},
-        {
-            '$match': {
-                '$expr': {
-                    '$eq': ['$topic_word_index', '$ex_details.topic_words.index']
-                }
-            }
-        },
-        {
-            '$facet': {
-            }
-        }
-    ]
+
+    pipeline = pipeline_base('verb', user_id, from_datetime, to_datetime)
 
     # only one facet can be used per pipeline, so [0] is safe
     facets = [p['$facet'] for p in pipeline if '$facet' in p][0]
