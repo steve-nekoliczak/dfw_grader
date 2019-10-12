@@ -2,7 +2,7 @@ from bson.json_util import dumps, RELAXED_JSON_OPTIONS
 from bson.objectid import ObjectId
 from json import loads
 
-from models import ExAttempt
+from models.ex_attempt import ExAttempt
 
 
 def post_ex_attempt(ex_id, user_id, topic_word_index, guess, timestamp=None):

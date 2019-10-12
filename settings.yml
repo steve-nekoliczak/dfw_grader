@@ -1,0 +1,8 @@
+dev:                                                                                                          
+    port:                           5013
+    mongo_uri:                      'mongodb://localhost:27017/fehlendewoerter'
+
+prod:
+    port:                           5013
+    mongo_uri:                      bogus
+

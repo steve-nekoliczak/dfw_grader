@@ -1,6 +1,6 @@
 import argparse
 
-from config import connex_app
+from config import port
 
 
 def get_args():
@@ -13,15 +13,6 @@ def get_args():
 
     ap.add_argument('-p', '--port', type=int,
                     help="Port number to run this service on.",
-                    default=5013)
+                    default=port)
 
-    a = ap.parse_args()
-
-    return a
-
-
-if __name__ == "__main__":
-    args = get_args()
-
-    connex_app.run(debug=args.debug, port=args.port)
-
+    return ap.parse_args()
