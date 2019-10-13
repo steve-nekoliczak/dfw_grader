@@ -15,13 +15,14 @@ def post_ex_attempt(ex_id, user_id, topic_word_index, guess, timestamp=None):
     if not result:
         return 'exercise id not found', 404
 
-    tw = [tw for tw in result['topic_words'] if tw['index'] == topic_word_index][0]
+    tw = [tw for tw in result['topic_words'] if tw['index']
+          == topic_word_index][0]
 
     if not tw:
         return 'topic word index not found', 404
 
     ea = ExAttempt(ex_id=ObjectId(ex_id),
-                   user_id=user_id,
+                   user_id=ObjectId(user_id),
                    topic_word_index=topic_word_index,
                    guess=guess,
                    ex_type=tw['type'],
@@ -35,4 +36,3 @@ def post_ex_attempt(ex_id, user_id, topic_word_index, guess, timestamp=None):
 
     json_result = loads(dumps(ea_dict, json_options=RELAXED_JSON_OPTIONS))
     return json_result
-

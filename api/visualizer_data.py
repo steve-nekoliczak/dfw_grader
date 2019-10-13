@@ -1,5 +1,6 @@
 import datetime
 from bson.json_util import dumps, RELAXED_JSON_OPTIONS
+from bson.objectid import ObjectId
 from json import loads
 
 from visualizer_data import pipelines
@@ -36,7 +37,7 @@ def get_stats(user_id, ex_type, from_datetime=None, to_datetime=None):
     to_datetime = sanitize_to_datetime_input(to_datetime)
 
     pipeline = pipelines.gen_pipeline(ex_type,
-                                      user_id,
+                                      ObjectId(user_id),
                                       from_datetime,
                                       to_datetime)
     if pipeline is None:
@@ -49,4 +50,3 @@ def get_stats(user_id, ex_type, from_datetime=None, to_datetime=None):
     json_result = loads(dumps(result, json_options=RELAXED_JSON_OPTIONS))
 
     return sanitize_facet_result(json_result)
-
